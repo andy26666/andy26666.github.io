@@ -13,6 +13,7 @@ let speed = 5;
 let ColorList = ['white','red','navy','purple', 'orange', 'blue','black','pink','green'];
 let timer = 3;
 
+
 //variable of scene checker
 var buttonTrue = true;
 var description = false;
@@ -114,6 +115,7 @@ function time() {
       timer -= 1;    
      }
     else if (timer === 0) {
+      playscene = false;
       IsGame = true;
     }
 }
@@ -147,6 +149,7 @@ function keyPressed() {
 function GameSet() {
   You();
   ColourScreen();
+  ColorGround();
 }
 
 //function of your character
@@ -183,14 +186,28 @@ function IsWall() {
 }
 
 function ColourScreen() {
-  square(width/2 - 25, 25, 75);
   fill(random(ColorList));
+  square(width/2 - 25, 25, 50);
   if (frameCount % 60 === 0 && timer > 0) { 
       timer -= 1;    
      }
-  else if (timer === 0) {
-    
-  }
-  
+}
 
+function ColorGround() {
+  
+  
+  
+  let xCoordinates = [];
+  for (let y = height; y > height/3; y-= height/5) {
+    for (let x = 0; x < width; x += width/5) {
+      xCoordinates.push(x);
+
+    }
+    for (let x of xCoordinates) {
+      fill('red');
+      rect(x, y, width/5, height/5);
+
+
+    }
+  }
 }

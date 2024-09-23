@@ -9,8 +9,10 @@ let CatImg;
 let Startbutton;
 let x = 200;
 let y = 50;
+let ColorList = ['white','red','navy','purple', 'orange', 'blue','black','pink','green', 'lightblue', 'yellow', 'darkblue', 'lightgreen', 'darkgreen', 'grey'];
+let ColorChoice;
+let ColorScreenChoice;
 let speed = 5;
-let ColorList = ['white','red','navy','purple', 'orange', 'blue','black','pink','green'];
 let timer = 3;
 
 
@@ -30,8 +32,11 @@ function setup() {
   GamestageImg = loadImage('Playscene.png');
   CatImg = loadImage('Cat.png');
   createCanvas(700, 400);
-  
+
+  ColorScreenChoice = random(ColorList);
   GameButton();
+  
+
 }
 
 function draw() {
@@ -57,6 +62,7 @@ function draw() {
   if (OverWall === true) { 
     GameText();
   }
+
 
 }
 
@@ -191,14 +197,15 @@ function IsWall() {
 
 function ColourScreen() {
 
-  fill(random(ColorList));
+  fill(ColorScreenChoice);
   square(width/2 - 25, 25, 50);
-  if (frameCount % 60 === 0 && timer > 0) { 
-      timer -= 1;    
-     }
+  //if (frameCount % 60 === 0 && timer > 0) { 
+      //timer -= 1;    
+     //}
 }
 
 function ColorGround() {
+  ColorChoice = random(ColorList);
   
   let xCoordinates = [];
   for (let y = height; y > height/3; y-= height/5) {
@@ -207,7 +214,7 @@ function ColorGround() {
 
     }
     for (let x of xCoordinates) {
-      fill('red');
+      fill(ColorChoice);
       rect(x, y, width/5, height/5);
 
 

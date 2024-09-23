@@ -8,7 +8,7 @@ let GamestageImg;
 let CatImg;
 let Startbutton;
 let x = 200;
-let y = 200;
+let y = 50;
 let speed = 5;
 let ColorList = ['white','red','navy','purple', 'orange', 'blue','black','pink','green'];
 let timer = 3;
@@ -79,10 +79,7 @@ function GameText() {
 
     textSize(40);
     text('COlOUR GAME',400-textWidth(),100);
-  
-  // creater text
-    textSize(25);
-    text('created by Kevin Lee', 270,200);
+ 
   }
   
   //text of description
@@ -92,15 +89,21 @@ function GameText() {
     fill('black');
     textSize(40);
     textAlign(CENTER);
-    text('HOW TO PLAY?',350, 80);
+    text('HOW TO PLAY?',350, 50);
     
     //text of small sentence
     textSize(25);
     textAlign(CENTER);
     textWrap(WORD);
-    text('Press WASD to move.', 350,150);
-    text('Press Q to pause.',350, 200);
+    text('Rule', 350, 100);
+    text('Go to the same colour square within 3 seconds.', 350, 125);
+    text('Control', 350,200);
+    text('Press WASD to move.', 350,225);
+    text('Press Q to pause.',350, 250);
     text('Press Any key to start', 350, 300);
+    
+    textSize(15);
+    text('created by Kevin Lee', 600,350);
   }
   if (playscene === true) {
     textSize(80);
@@ -147,15 +150,16 @@ function keyPressed() {
 //function of game
 
 function GameSet() {
-  You();
   ColourScreen();
   ColorGround();
+  You();
 }
 
 //function of your character
 function You() {
   image(CatImg, x, y,
         CatImg.width*0.3, CatImg.height*0.2);
+  let yCoordinates = 10;
   KeyInteract();
   IsWall();
 }
@@ -186,6 +190,7 @@ function IsWall() {
 }
 
 function ColourScreen() {
+
   fill(random(ColorList));
   square(width/2 - 25, 25, 50);
   if (frameCount % 60 === 0 && timer > 0) { 
@@ -194,8 +199,6 @@ function ColourScreen() {
 }
 
 function ColorGround() {
-  
-  
   
   let xCoordinates = [];
   for (let y = height; y > height/3; y-= height/5) {

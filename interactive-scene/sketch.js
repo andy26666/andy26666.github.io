@@ -7,21 +7,30 @@ let GameImg;
 let GamestageImg;
 let CatImg;
 let Startbutton;
-let x = 200;
-let y = 50;
 let ColorList = ['white','red','navy','purple', 'orange', 'blue','black','pink','green', 'lightblue', 'yellow', 'darkblue', 'lightgreen', 'darkgreen', 'grey'];
 let ColorChoice;
 let ColorScreenChoice;
+let CorrectPlace;
 let speed = 5;
 let timer = 3;
-
+let c = [];
+let x = 200;
+let y = 50;
 
 //variable of scene checker
 var buttonTrue = true;
 var description = false;
 var playscene = false;
 var IsGame = false;
-var OverWall = false;
+var IsPause = false;
+
+//variable for wall
+var FrontWall = false;
+var BehindWall = false;
+var LeftWall = false;
+var RightWall = false;
+
+
 var GameOver = false;
 
 function setup() {
@@ -32,11 +41,18 @@ function setup() {
   GamestageImg = loadImage('Playscene.png');
   CatImg = loadImage('Cat.png');
   createCanvas(700, 400);
-
-  ColorScreenChoice = random(ColorList);
-  GameButton();
   
-
+  ColorChoice = random(ColorList);
+  ColorScreenChoice = random(ColorList);
+  
+  for (let y = height; y >= height/3; y-= height/6) {
+    c[y]= [];
+    for (let x = 0; x < width; x+= width/5) {
+      c[y][x] = color(random(ColorList));
+    }
+  }
+  
+  GameButton();
 }
 
 function draw() {
@@ -59,11 +75,6 @@ function draw() {
     background(GamestageImg);
     GameSet();
   }
-  if (OverWall === true) { 
-    GameText();
-  }
-
-
 }
 
 function GameButton() {
@@ -116,6 +127,14 @@ function GameText() {
     textAlign(CENTER, CENTER);
     text(timer,width/2, height/2);
     time();
+
+  if (IsPause === true) {
+    fill('pink');
+    rect(100,100, 500, 200);
+    fill('black');
+    textSize(30);
+    text('Pause, Click P to continue!', 350, 200);
+  }
   }
 }
 
@@ -144,20 +163,12 @@ function keyPressed() {
     description = false;
     playscene = true;
   }
-  if (OverWall === true) {
-    OverWall = false;
-  }
-
 }
-
-
-
 /////////////////////////////////////////
 //function of game
 
 function GameSet() {
   ColourScreen();
-  ColorGround();
   You();
 }
 
@@ -165,33 +176,74 @@ function GameSet() {
 function You() {
   image(CatImg, x, y,
         CatImg.width*0.3, CatImg.height*0.2);
-  let yCoordinates = 10;
   KeyInteract();
   IsWall();
 }
 
 function KeyInteract() {
   
-  if (keyIsDown(87)) {  //w
+  if (FrontWall === false) {
+    if (keyIsDown(87)) {  //w
     y -= speed;
   }
-  if (keyIsDown(83)) {  //s
+  }
+  
+  if (BehindWall === false) {
+    if (keyIsDown(83)) {  //s
     y += speed;
   }
-  if (keyIsDown(65)) {  //a
+  }
+  
+  if (LeftWall === false) {
+    if (keyIsDown(65)) {  //a
     x -= speed;
   }
-  if (keyIsDown(68)) {  //d
+  }
+  
+  if (RightWall === false) {
+    if (keyIsDown(68)) {  //d
     x += speed;
   }
+  }
+  if (key === 'p') {
+    fill('pink');
+    rect(100,100, 500, 200);
+    fill('black');
+    textSize(30);
+    text('Pause, Click P to continue!', 350, 200);
+    if (key === 'p')
+  }
+  
 }
 
 function IsWall() {
-  if (x >= width - CatImg.width*0.3 || x <= 0 + CatImg.width*0.3) {
-    OverWall = true;
+  // if wall on left
+  if (x <= -40 ) {
+    LeftWall = true;
+  }else {
+    LeftWall = false;
   }
-  if (y >= height - CatImg.height*0.2 || y <= 0 + CatImg.height*0.2) {
-    OverWall = true;
+
+  
+  //wall on right
+  if (x >= 600) {
+    RightWall = true;
+  }else {
+    RightWall = false;
+  }
+  
+  //wall on behind
+  if (y >= 335) {
+    BehindWall = true;
+  } else {
+    BehindWall = false;
+  }
+  
+  //wall on front
+  if (y <= -20) {
+    FrontWall = true;
+  } else {
+    FrontWall = false;
   }
 }
 
@@ -199,25 +251,22 @@ function ColourScreen() {
 
   fill(ColorScreenChoice);
   square(width/2 - 25, 25, 50);
-  //if (frameCount % 60 === 0 && timer > 0) { 
-      //timer -= 1;    
-     //}
+  ColorGround();
 }
 
 function ColorGround() {
-  ColorChoice = random(ColorList);
-  
-  let xCoordinates = [];
-  for (let y = height; y > height/3; y-= height/5) {
+  for (let y = height; y >= height/3; y-= height/6) {
     for (let x = 0; x < width; x += width/5) {
-      xCoordinates.push(x);
-
-    }
-    for (let x of xCoordinates) {
-      fill(ColorChoice);
-      rect(x, y, width/5, height/5);
-
-
+      fill(c[y][x]);
+      rect(x, y, width/5, height/6);
     }
   }
+}
+
+function Pause() {
+  fill('pink');
+  let pause_bar = rect(100,100, 500, 200);
+  fill('black');
+  textSize(30);
+  text('Pause, Click P to continue!', 350, 200);
 }

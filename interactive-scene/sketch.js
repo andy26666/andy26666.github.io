@@ -206,12 +206,7 @@ function KeyInteract() {
   }
   }
   if (key === 'p') {
-    fill('pink');
-    rect(100,100, 500, 200);
-    fill('black');
-    textSize(30);
-    text('Pause, Click P to continue!', 350, 200);
-    if (key === 'p')
+    
   }
   
 }

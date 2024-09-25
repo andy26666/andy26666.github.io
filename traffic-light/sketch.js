@@ -1,8 +1,12 @@
+//Traffic Light Simulator
+// Kevin Lee
+
+let lightState = "red";
+let lastSwitchedTime = 0;
 let WaitTime = 2000;
-let TotalTime = 0;
-let top;
-let mid;
-let bot;
+const GREEN_LIGHT_DURATION = 3000;
+const YELLOW_LIGHT_DURATION = 1000;
+const RED_LIGHT_DURATION = 4000;
 
 function setup() {
   createCanvas(600, 600);
@@ -11,6 +15,40 @@ function setup() {
 function draw() {
   background(255);
   drawOutlineOfLights();
+  changeStateIfNeeded();
+  displayCorrectLight();
+}
+
+
+function displayCorrectLight() {
+  if (lightState === "green") {
+    fill("green");
+    ellipse(width/2, height/2 + 65, 50, 50); //bottom
+  }
+  else if (lightState === "yellow") {
+    fill("yellow");
+    ellipse(width/2, height/2, 50, 50); //middle
+  }
+  else if (lightState === "red") {
+    fill("red");
+    ellipse(width/2, height/2 - 65, 50, 50); //top
+  }
+
+}
+
+function changeStateIfNeeded() {
+  if (lightState === "green" && millis() > lastSwitchedTime + GREEN_LIGHT_DURATION){
+    lightState = "yellow";
+    lastSwitchedTime = millis();
+  }
+  else if (lightState === "yellow" && millis() > lastSwitchedTime + YELLOW_LIGHT_DURATION){
+    lightState = "red";
+    lastSwitchedTime = millis();
+  }
+  else if (lightState === "red" && millis() > lastSwitchedTime + RED_LIGHT_DURATION){
+    lightState = "green";
+    lastSwitchedTime = millis();
+  }
 }
 
 function drawOutlineOfLights() {
@@ -18,20 +56,5 @@ function drawOutlineOfLights() {
   rectMode(CENTER);
   fill(0);
   rect(width/2, height/2, 75, 200, 10);
-  
 
-
-
-  top = ellipse(width/2, height/2 - 65, 50, 50); //top
-
-  mid = ellipse(width/2, height/2, 50, 50); //middle
-
-  bot = ellipse(width/2, height/2 + 65, 50, 50); //bottom
-
-  if (millis > WaitTime + TotalTime) {
-    top.color('red');
-  }
-
-
-  
 }

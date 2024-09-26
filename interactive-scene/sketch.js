@@ -6,7 +6,10 @@ let Img;
 let GameImg;
 let GamestageImg;
 let CatImg;
+let SetImg;
 let Startbutton;
+let cnv;
+let SettingImg;
 let ColorList = ["white","red","navy","purple", "orange", "blue","black","pink","green", "lightblue", "yellow", "darkblue", "lightgreen", "darkgreen", "grey"];
 let ColorChoice;
 let ColorScreenChoice;
@@ -18,19 +21,19 @@ let x = 200;
 let y = 50;
 
 //variable of scene checker
-let buttonTrue = true;
-let description = false;
-let playscene = false;
-let IsGame = false;
-let IsPause = false;
+var buttonTrue = true;
+var description = false;
+var playscene = false;
+var IsGame = false;
+var IsPause = false;
 
 //variable for wall
-let FrontWall = false;
-let BehindWall = false;
-let LeftWall = false;
-let RightWall = false;
+var FrontWall = false;
+var BehindWall = false;
+var LeftWall = false;
+var RightWall = false;
 
-let GameOver = false;
+var GameOver = false;
 
 function setup() {
   
@@ -39,6 +42,7 @@ function setup() {
   GameImg = loadImage("Game.jpg");
   GamestageImg = loadImage("Playscene.png");
   CatImg = loadImage("Cat.png");
+  SetImg = loadImage("Setting.png");
   createCanvas(700, 400);
   
   ColorChoice = random(ColorList);
@@ -78,7 +82,7 @@ function draw() {
 
 function GameButton() {
   // start button
-  if (buttonTrue === true){
+  if (buttonTrue === true && IsGame === false){
     Startbutton = createButton("START");
     Startbutton.size(150,50);
     Startbutton.position(275, 300);
@@ -125,14 +129,6 @@ function GameText() {
     text(timer,width/2, height/2);
     time();
   }
-
-  if (IsPause === true) {
-    fill("pink");
-    rect(100,100, 500, 200);
-    fill("black");
-    textSize(30);
-    text("Pause, Click P to continue!", 350, 200);
-  }
 }
 
 
@@ -161,20 +157,15 @@ function keyPressed() {
     description = false;
     playscene = true;
   }
-  if (IsGame === true && keyIsDown(80)) {
-    IsPause = true; 
-    GameText();
-  }
-  if (IsPause === true && keyIsDown(80)) {
-    IsPause = false;
-  }
 }
+
 /////////////////////////////////////////
 //function of game
 
 function GameSet() {
   ColourScreen();
   You();
+  Setting();
 }
 
 //function of your character
@@ -263,11 +254,20 @@ function ColorGround() {
     }
   }
 }
+function Setting() {
+  image(SetImg, 0, 0, SetImg.width*0.1, SetImg.height*0.1);   
 
-function Pause() {
-  fill("pink");
-  let pause_bar = rect(100,100, 500, 200);
-  fill("black");
-  textSize(30);
-  text("Pause, Click P to continue!", 350, 200);
+}
+
+
+function SetScene() {
+    fill("pink");
+    rect(100,100, 500, 200);
+    fill("black");
+    textSize(30);
+    text("Pause, Click P to continue!", 350, 200);
+}
+
+function mouseClicked() {
+
 }

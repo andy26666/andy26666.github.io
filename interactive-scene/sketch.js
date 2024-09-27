@@ -8,9 +8,7 @@ let GamestageImg;
 let CatImg;
 let SetImg;
 let Startbutton;
-let cnv;
-let SettingImg;
-let ColorList = ["white","red","navy","purple", "orange", "blue","black","pink","green", "lightblue", "yellow", "darkblue", "lightgreen", "darkgreen", "grey"];
+let ColorList = ["white","red","navy","purple", "orange", "blue","black","pink","green", "lightblue", "yellow", "lightgreen", "brown", "grey"];
 let ColorChoice;
 let ColorScreenChoice;
 let CorrectPlace;
@@ -19,11 +17,12 @@ let timer = 3;
 let c = [];
 let x = 200;
 let y = 50;
+let list = [];
+let new_list;
 
 //variable of scene checker
 var buttonTrue = true;
 var description = false;
-var playscene = false;
 var IsGame = false;
 var IsPause = false;
 
@@ -45,8 +44,6 @@ function setup() {
   SetImg = loadImage("Setting.png");
   createCanvas(700, 400);
   
-  ColorChoice = random(ColorList);
-  ColorScreenChoice = random(ColorList);
   
   for (let y = height; y >= height/3; y-= height/6) {
     c[y]= [];
@@ -54,6 +51,8 @@ function setup() {
       c[y][x] = color(random(ColorList));
     }
   }
+
+  //ColorScreenChoice = random(list);
   
   GameButton();
 }
@@ -69,14 +68,11 @@ function draw() {
     Startbutton.hide();
     GameText();
   }
-  if (playscene === true) {
-    background(GamestageImg);
-    GameText();
-  }
 
   if (IsGame === true) {
     background(GamestageImg);
     GameSet();
+    GameText();
   }
 }
 
@@ -123,10 +119,10 @@ function GameText() {
     textSize(15);
     text("created by Kevin Lee", 600,350);
   }
-  if (playscene === true) {
-    textSize(80);
-    textAlign(CENTER, CENTER);
-    text(timer,width/2, height/2);
+  if (IsGame === true) {
+    fill('black');
+    textSize(40);
+    text(timer,550, 100);
     time();
   }
 }
@@ -135,10 +131,10 @@ function GameText() {
 function time() {
   if (frameCount % 60 === 0 && timer > 0) { 
     timer -= 1;    
+    
   }
-  else if (timer === 0) {
-    playscene = false;
-    IsGame = true;
+  else if (timer === 0 && IsGame === true) {
+    Checking();
   }
 }
 
@@ -155,7 +151,7 @@ function GameChapter() {
 function keyPressed() {
   if (description === true) {
     description = false;
-    playscene = true;
+    IsGame = true;
   }
 }
 
@@ -163,7 +159,7 @@ function keyPressed() {
 //function of game
 
 function GameSet() {
-  ColourScreen();
+  ColorGround();
   You();
   Setting();
 }
@@ -243,20 +239,24 @@ function ColourScreen() {
 
   fill(ColorScreenChoice);
   square(width/2 - 25, 25, 50);
-  ColorGround();
 }
 
 function ColorGround() {
   for (let y = height; y >= height/3; y-= height/6) {
     for (let x = 0; x < width; x += width/5) {
       fill(c[y][x]);
+      list = c[y][x];
+      new_list = [list,new_list];
+      list = [];
       rect(x, y, width/5, height/6);
     }
+    ColorScreenChoice = color(random(list));
   }
+  ColourScreen();
 }
 function Setting() {
-  image(SetImg, 0, 0, SetImg.width*0.1, SetImg.height*0.1);   
 
+  image(SetImg, 0, 0, SetImg.width*0.1, SetImg.height*0.1);   
 }
 
 
@@ -268,6 +268,6 @@ function SetScene() {
     text("Pause, Click P to continue!", 350, 200);
 }
 
-function mouseClicked() {
-
+function Checking() {
+  text('true', 100,200);
 }

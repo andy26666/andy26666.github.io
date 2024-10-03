@@ -3,7 +3,7 @@
 ## Demos
 - [Square Moving Around Screen](square-moving)
 - [Traffic Light](traffic-light)
-- [Bouncing Balls] (bouncing-balls)
+- [Bouncing Balls](bouncing-balls)
 
 
 

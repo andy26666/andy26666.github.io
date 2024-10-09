@@ -2,20 +2,22 @@
 //Kevin Lee
 // 10/8/2024
 
-// image of the sprite
 let ballImg;
 let playerImg;
 
+let ball;
+let bat;
 let position;
 let choice;
 let new_x;
 let new_y;
-let player_x;
-let player_y;
+
+const PLAYER_X = 200;
+const PLAYER_Y = 200;
 
 function preload() {
   ballImg = loadImage("ball.gif");
-  playerImg = loadImage("player.jpg");
+  playerImg = loadImage("bat.png");
 }
 
 function setup() {
@@ -25,31 +27,43 @@ function setup() {
 
 function draw() {
   background(220);
-  
+
   player();
   ballSet();
+
+  gameOver();
 }
 
 function ballSet() {
-  image(ballImg, position.x, position.y, 40, 40);
-  
-  // ball movement depends on balls position
+  ball = image(ballImg, position.x, position.y, 40, 40);
+
   if (choice <= 25) {
-    new_x = position.x--;
+    new_x = position.x-=2;
+    if (position.x < 0) {
+      posit();
+    }
   }
   else if (choice <= 50) {
-    new_x = position.x++;
+    new_x = position.x+=2;
+    if (new_x > width) {
+      posit();
+    }
   }
   else if (choice <= 75) {
-    new_y = position.y++;
+    new_y = position.y+=2;
+    if (new_y > height) {
+      posit();
+    }
   }
   else {
-    new_y = position.y--;
+    new_y = position.y-=2;
+    if (new_y < 0) {
+      posit();
+    }
   }
 }
 
 function posit() {
-  // balls position randomly
   choice = random(100);
   
   if (choice <= 25) {
@@ -79,8 +93,10 @@ function posit() {
   return position;
 }
 
-function player() {
-  player_x = width/2;
-  player_y = height/2;
-  image(playerImg, player_x, player_y, playerImg.width*0.1, playerImg.height*0.1);
+function player(PLAYER_X,PLAYER_Y) {
+  bat = image(playerImg, PLAYER_X -playerImg.width*0.05, PLAYER_Y - playerImg.height*0.03, playerImg.width*0.1, playerImg.height*0.1);
 }
+
+function gameOver() {
+}
+

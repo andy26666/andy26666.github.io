@@ -5,6 +5,7 @@
 let ballImg;
 let playerImg;
 
+let isLose = false;
 let ball;
 let bat;
 let position;
@@ -32,39 +33,42 @@ function draw() {
 
   player();
   ballSet();
-
   gameOver();
+
 }
 
 function ballSet() {
   ball = image(ballImg, position.x, position.y, 40, 40);
 
-  if (choice <= 25) {
-    new_x = position.x-=2;
-    if (position.x < 0) {
-      posit();
+  if (isLose !== true) {
+    if (choice <= 25) {
+      new_x = position.x-=2;
+      if (position.x < 0) {
+        posit();
+      }
     }
-  }
-  else if (choice <= 50) {
-    new_x = position.x+=2;
-    if (new_x > width) {
-      posit();
+    else if (choice <= 50) {
+      new_x = position.x+=2;
+      if (new_x > width) {
+        posit();
+      }
     }
-  }
-  else if (choice <= 75) {
-    new_y = position.y+=2;
-    if (new_y > height) {
-      posit();
+    else if (choice <= 75) {
+      new_y = position.y+=2;
+      if (new_y > height) {
+        posit();
+      }
     }
-  }
-  else {
-    new_y = position.y-=2;
-    if (new_y < 0) {
-      posit();
+    else {
+      new_y = position.y-=2;
+      if (new_y < 0) {
+        posit();
+      }
     }
+
   }
 }
-
+// spawn ball in random place
 function posit() {
   choice = random(100);
   
@@ -96,20 +100,19 @@ function posit() {
 }
 
 function player() {
-  bat_wid = playerImg.width*0.09;
-  bat_hei = playerImg.height*0.08
-  bat = image(playerImg, PLAYER_X -playerImg.width*0.04, PLAYER_Y - playerImg.height*0.03, playerImg.width*0.09, playerImg.height*0.08);
-  
 
+  bat = image(playerImg, PLAYER_X -playerImg.width*0.04, PLAYER_Y - playerImg.height*0.03, playerImg.width*0.09, playerImg.height*0.08);
 }
 
 function gameOver() {
-  let d = dist(PLAYER_X, PLAYER_Y, position.x, position.y);
+  // detect the collision for the ball and the bat
+  d = dist(PLAYER_X, PLAYER_Y, position.x, position.y);
 
-  if (position.x + playerImg.width*0.03 > PLAYER_X -playerImg.width*0.07 && position.x < PLAYER_X - playerImg.width*0.04 + playerImg.width*0.09 && position.y + playerImg.height*0.08 > PLAYER_Y - playerImg.height*0.03 && position.y < PLAYER_Y - playerImg.height*0.02 + playerImg.height*0.06) {
-    //console.log("bump");
-  }
-  else {
-    //console.log("safe");
+  // if collide, game over
+  if (d < 30) {
+    isLose = true;
+    background("black");
+    fill("white");
+    text("GAME OVER", width/2-30, height/2-20);
   }
 }

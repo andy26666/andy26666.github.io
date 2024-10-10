@@ -12,8 +12,10 @@ let choice;
 let new_x;
 let new_y;
 
-const PLAYER_X = 200;
-const PLAYER_Y = 200;
+let PLAYER_X = 200;
+let PLAYER_Y = 200;
+let bat_wid;
+let bat_hei;
 
 function preload() {
   ballImg = loadImage("ball.gif");
@@ -93,10 +95,21 @@ function posit() {
   return position;
 }
 
-function player(PLAYER_X,PLAYER_Y) {
-  bat = image(playerImg, PLAYER_X -playerImg.width*0.05, PLAYER_Y - playerImg.height*0.03, playerImg.width*0.1, playerImg.height*0.1);
+function player() {
+  bat_wid = playerImg.width*0.09;
+  bat_hei = playerImg.height*0.08
+  bat = image(playerImg, PLAYER_X -playerImg.width*0.04, PLAYER_Y - playerImg.height*0.03, playerImg.width*0.09, playerImg.height*0.08);
+  
+
 }
 
 function gameOver() {
-}
+  let d = dist(PLAYER_X, PLAYER_Y, position.x, position.y);
 
+  if (position.x + playerImg.width*0.03 > PLAYER_X -playerImg.width*0.07 && position.x < PLAYER_X - playerImg.width*0.04 + playerImg.width*0.09 && position.y + playerImg.height*0.08 > PLAYER_Y - playerImg.height*0.03 && position.y < PLAYER_Y - playerImg.height*0.02 + playerImg.height*0.06) {
+    //console.log("bump");
+  }
+  else {
+    //console.log("safe");
+  }
+}

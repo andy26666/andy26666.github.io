@@ -4,6 +4,7 @@
 
 let ballImg;
 let playerImg;
+let Img;
 
 let isLose = false;
 let ball;
@@ -18,24 +19,34 @@ let PLAYER_Y = 200;
 let bat_wid;
 let bat_hei;
 
+
 function preload() {
-  ballImg = loadImage("ball.gif");
+  Img = loadImage("startScene.jpg");
   playerImg = loadImage("bat.png");
+  ballImg = loadImage("ball.gif");
+
 }
 
 function setup() {
   createCanvas(400, 400);
+
   posit();
+  preload();
+
 }
 
 function draw() {
-  background(220);
+
+  background(Img);
+
+
 
   player();
   ballSet();
-  gameOver();
+  //gameOver();
 
 }
+
 
 function ballSet() {
   ball = image(ballImg, position.x, position.y, 40, 40);
@@ -101,7 +112,22 @@ function posit() {
 
 function player() {
 
-  bat = image(playerImg, PLAYER_X -playerImg.width*0.04, PLAYER_Y - playerImg.height*0.03, playerImg.width*0.09, playerImg.height*0.08);
+  bat = image(playerImg, PLAYER_X -playerImg.width*0.04, PLAYER_Y - playerImg.height*0.03, playerImg.width*0.08, playerImg.height*0.07);
+  
+  if (keyIsPressed === true) {
+    if (keyCode === "w") {
+      bat.rotate(45);
+    }
+    if (keyCode === "a") {
+      shoot();
+    }
+    if (keyCode === "s") {
+      shoot();
+    }
+    if (keyCode === "d") {
+      shoot();
+    } 
+  }
 }
 
 function gameOver() {
@@ -109,10 +135,22 @@ function gameOver() {
   d = dist(PLAYER_X, PLAYER_Y, position.x, position.y);
 
   // if collide, game over
+
   if (d < 30) {
-    isLose = true;
-    background("black");
-    fill("white");
-    text("GAME OVER", width/2-30, height/2-20);
+    overScene();
+  }
+}
+  
+
+function overScene() {
+  isLose = true;
+  background("black");
+  fill("white");
+  text("GAME OVER", width/2-30, height/2-20);
+}
+
+function shoot() {
+  let attack = {
+    
   }
 }

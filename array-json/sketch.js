@@ -14,6 +14,7 @@ let choice;
 let new_x;
 let new_y;
 
+let directOfPlayer;
 let PLAYER_X = 200;
 let PLAYER_Y = 200;
 let bat_wid;
@@ -116,15 +117,19 @@ function player() {
   
   if (keyIsPressed === true) {
     if (keyCode === "w") {
-      bat.rotate(45);
+      directOfPlayer = "front";
+      shoot();
     }
     if (keyCode === "a") {
+      directOfPlayer = "left";
       shoot();
     }
     if (keyCode === "s") {
+      directOfPlayer = "back";
       shoot();
     }
     if (keyCode === "d") {
+      directOfPlayer = "right";
       shoot();
     } 
   }
@@ -151,6 +156,8 @@ function overScene() {
 
 function shoot() {
   let attack = {
-    
-  }
+    if (directOfPlayer === "front") {
+      
+    }
+  };
 }

@@ -90,7 +90,22 @@ function posit() {
   return position;
 }
 function keyTyped() {
-
+  if (n > -1 && n < 4) {
+    if (key === 'a') {
+      console.log(n -= 1);
+    }
+    if (key === 'd') {
+      console.log(n += 1);
+    }
+  }
+  else {
+    if (n === 4) {
+      n = 3;
+    }
+    if (n === -1) {
+      n = 0;
+    }
+  }
 }
 
 function playerSet() {
@@ -98,26 +113,7 @@ function playerSet() {
   PLAYER_Y = height-playerImg.height*0.07;
   playerPosit = [PLAYER_X, 4.3*PLAYER_X, 7.6*PLAYER_X,11*PLAYER_X];
 
-  if (keyIsPressed === true) {
-    if (n > -1 && n < 4) {
-      if (key === 'a') {
-        console.log(n -= 1);
-      }
-      if (key === 'd') {
-        console.log(n += 1);
-      }
-    }
-    else {
-      if (n === 4) {
-        n = 3;
-      }
-      if (n === -1) {
-        n = 0;
-      }
-    }
-  }
-    
-  
+
   image(playerImg, playerPosit[n], PLAYER_Y, playerImg.width*0.08, playerImg.height*0.07);
 }
 

@@ -11,15 +11,15 @@ let ball;
 let bat;
 let position;
 let choice;
-let new_x;
-let new_y;
 
 let directOfPlayer;
-let PLAYER_X = 200;
-let PLAYER_Y = 200;
+let PLAYER_X;
+let PLAYER_Y;
 let bat_wid;
 let bat_hei;
 
+let playerPosit;
+let n = 0;
 
 function preload() {
   Img = loadImage("startScene.jpg");
@@ -41,8 +41,7 @@ function draw() {
   background(Img);
 
 
-
-  player();
+  playerSet();
   ballSet();
   //gameOver();
 
@@ -53,32 +52,12 @@ function ballSet() {
   ball = image(ballImg, position.x, position.y, 40, 40);
 
   if (isLose !== true) {
-    if (choice <= 25) {
-      new_x = position.x-=2;
-      if (position.x < 0) {
-        posit();
-      }
+    position.y += 2;
+    if (position.y > height) {
+      posit();
     }
-    else if (choice <= 50) {
-      new_x = position.x+=2;
-      if (new_x > width) {
-        posit();
-      }
-    }
-    else if (choice <= 75) {
-      new_y = position.y+=2;
-      if (new_y > height) {
-        posit();
-      }
-    }
-    else {
-      new_y = position.y-=2;
-      if (new_y < 0) {
-        posit();
-      }
-    }
-
   }
+
 }
 // spawn ball in random place
 function posit() {
@@ -86,54 +65,62 @@ function posit() {
   
   if (choice <= 25) {
     position = {
-      x: width-40,
-      y: height/2-20,
+      x: width/8,
+      y: 0,
     };
   }
   else if (choice <= 50) {
     position = {
-      x: 0,
-      y: height/2-20,
+      x: 3*width/8,
+      y: 0,
     };
   }
   else if (choice <= 75) {
     position = {
-      x: width/2-20,
+      x: 5*width/8,
       y: 0,
     };
   }
   else if (choice <= 100) {
     position = {
-      x: width/2-20,
-      y: height-40,
+      x: 7*width/8,
+      y: 0,
     };
   } 
   return position;
 }
+function keyTyped() {
 
-function player() {
-
-  bat = image(playerImg, PLAYER_X -playerImg.width*0.04, PLAYER_Y - playerImg.height*0.03, playerImg.width*0.08, playerImg.height*0.07);
-  
-  if (keyIsPressed === true) {
-    if (keyCode === "w") {
-      directOfPlayer = "front";
-      shoot();
-    }
-    if (keyCode === "a") {
-      directOfPlayer = "left";
-      shoot();
-    }
-    if (keyCode === "s") {
-      directOfPlayer = "back";
-      shoot();
-    }
-    if (keyCode === "d") {
-      directOfPlayer = "right";
-      shoot();
-    } 
-  }
 }
+
+function playerSet() {
+  PLAYER_X = width/8-playerImg.width*0.02;
+  PLAYER_Y = height-playerImg.height*0.07;
+  playerPosit = [PLAYER_X, 4.3*PLAYER_X, 7.6*PLAYER_X,11*PLAYER_X];
+
+  if (keyIsPressed === true) {
+    if (n > -1 && n < 4) {
+      if (key === 'a') {
+        console.log(n -= 1);
+      }
+      if (key === 'd') {
+        console.log(n += 1);
+      }
+    }
+    else {
+      if (n === 4) {
+        n = 3;
+      }
+      if (n === -1) {
+        n = 0;
+      }
+    }
+  }
+    
+  
+  image(playerImg, playerPosit[n], PLAYER_Y, playerImg.width*0.08, playerImg.height*0.07);
+}
+
 
 function gameOver() {
   // detect the collision for the ball and the bat
@@ -156,8 +143,6 @@ function overScene() {
 
 function shoot() {
   let attack = {
-    if (directOfPlayer === "front") {
-      
-    }
+    
   };
 }

@@ -15,6 +15,7 @@ let choice;
 let directOfPlayer;
 let PLAYER_X;
 let PLAYER_Y;
+let new_y;
 let bat_wid;
 let bat_hei;
 
@@ -43,7 +44,7 @@ function draw() {
 
   playerSet();
   ballSet();
-  //gameOver();
+  gameOver();
 
 }
 
@@ -51,7 +52,7 @@ function draw() {
 function ballSet() {
   ball = image(ballImg, position.x, position.y, 40, 40);
 
-  if (isLose !== true) {
+  if (isLose !== true) { 
     position.y += 2;
     if (position.y > height) {
       posit();
@@ -115,17 +116,16 @@ function playerSet() {
 
 
   image(playerImg, playerPosit[n], PLAYER_Y, playerImg.width*0.08, playerImg.height*0.07);
+  console.log(n);
 }
 
 
 function gameOver() {
   // detect the collision for the ball and the bat
-  d = dist(PLAYER_X, PLAYER_Y, position.x, position.y);
-
+  d = (playerPosit[n], PLAYER_Y, position.x, position.y);
   // if collide, game over
-
   if (d < 30) {
-    overScene();
+    console.log("game over");
   }
 }
   

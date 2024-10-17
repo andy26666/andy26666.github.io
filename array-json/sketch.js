@@ -5,6 +5,7 @@
 let ballImg;
 let playerImg;
 let Img;
+let directImg;
 
 let isLose = false;
 let ball;
@@ -35,15 +36,13 @@ function preload() {
   Img = loadImage("startScene.jpg");
   playerImg = loadImage("bat.png");
   ballImg = loadImage("ball.gif");
+  directImg = loadImage("direction.png");
 
 }
 
 function setup() {
   createCanvas(400, 400);
-
   posit();
-  preload();
-
 }
 
 function draw() {
@@ -104,8 +103,8 @@ function keyTyped() {
   if (n > 0) {
     if (key === 'a') {
       n -= 1;
-      }
     }
+  }
   if (n < 3) {
     if (key === 'd') {
       n += 1;
@@ -143,13 +142,6 @@ function playerSet() {
   
   playerPosit_y = [PLAYER_Y, PLAYER_Y-30];
 
-  push();
-  playerPosit_x[n] = 0;
-  playerPosit_y[dy] = 0;
-  translate(playerImg.width*0.08, playerImg.height*0.07);
-  rotate(45);
-  pop();
-
   //display player
   image(playerImg, playerPosit_x[n], playerPosit_y[dy], playerImg.width*0.08, playerImg.height*0.07);
   
@@ -158,9 +150,9 @@ function playerSet() {
     dy -= 1;
     normalAtt = false;
   }
-
-  
-
+  if (k === 2) {
+    specialAtt(playerPosit_x[n], playerPosit_y[dy]);
+  }
 }
 
 function circleBar() {
@@ -179,11 +171,12 @@ function circleBar() {
   if (k === 2) {
     c2 = "red";
     console.log("special attack is ready");
-
   }
-  
 }
 
+function specialAtt() {
+  image(directImg, playerPosit_x[n] + 50, playerPosit_y[dy], directImg.width * 0.05, directImg.height * 0.05);
+}
 
 function gameOver() {
   // detect the collision for the ball and the bat
@@ -194,7 +187,6 @@ function gameOver() {
   }
 }
   
-
 function overScene() {
   isLose = true;
   background("black");

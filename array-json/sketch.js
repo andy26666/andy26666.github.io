@@ -143,10 +143,12 @@ function playerSet() {
   
   playerPosit_y = [PLAYER_Y, PLAYER_Y-30];
 
+  push();
   playerPosit_x[n] = 0;
   playerPosit_y[dy] = 0;
   translate(playerImg.width*0.08, playerImg.height*0.07);
   rotate(45);
+  pop();
 
   //display player
   image(playerImg, playerPosit_x[n], playerPosit_y[dy], playerImg.width*0.08, playerImg.height*0.07);

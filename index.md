@@ -9,6 +9,7 @@
 - [Terrain Generation](terrain)
 - [Bubble Demo](bubble)
 - [Sound Effects Demo](sound-fx)
+- [Translate/Rotate](translate)
 
 
 

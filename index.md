@@ -10,7 +10,7 @@
 - [Bubble Demo](bubble)
 - [Sound Effects Demo](sound-fx)
 - [Translate/Rotate](translate)
-
+- [Grid Demo](grid)
 
 
 

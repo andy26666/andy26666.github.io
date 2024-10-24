@@ -10,7 +10,7 @@
 
 let grid;
 let cellSize;
-const GRID_SIZE = 3;
+const GRID_SIZE = 4;
 
 function setup() {
   if (windowWidth < windowHeight) {

@@ -5,42 +5,33 @@
 let ballImg;
 let playerImg;
 let Img;
-let gunImg;
 
+// variable of detect lose or not
 let isLose = false;
+
 let ball;
 let bat;
 let position;
-let choice;
-let attack;
-
-let directOfPlayer;
 let PLAYER_X;
 let PLAYER_Y;
-let new_y;
-let bat_wid;
-let bat_hei;
+
+
+// variable of heart reduce
 let to = 60;
 
-let isAttack = false;
-let normalAtt = false;
 let removeHeart = false;
-let isGun = false;
-let playerPosit_x;
-let playerPosit_y;
-let n = 0;
-let k = 0;
-let dy = 0;
 
-let button;
-let cc = [];
-let gb = 0;
+// variable of bat x,y position
+let playerPosit_x;
+//variable of use bat x,y array[k], array[dy]
+let n = 0;
+
+
 
 function preload() {
   Img = loadImage("startScene.jpg");
   playerImg = loadImage("bat.png");
   ballImg = loadImage("ball.gif");
-  gunImg = loadImage("gun.png");
 
 }
 
@@ -54,6 +45,7 @@ function setup() {
 
 function draw() {
   background(Img);
+  
   // remove heart when ball hit screen
   if (removeHeart === true) {
     to-=20;
@@ -63,13 +55,25 @@ function draw() {
       isLose = true;
     }
   }
+  //function of drawing heart
   for (let r = 20; r <= to; r+= 20) {
     heart(15, r, 15);
   }
+  
+  // function of ball and bat
   playerSet();
   ballSet();
+  
+  // detect ball and bat hit to use x,y position, if hit the ball remove
+  if (!(playerPosit_x[n] > position.x + 40 ||
+           playerPosit_x[n] + playerImg.width*0.08 < position.x ||
+           PLAYER_Y > position.y + 40 ||
+           PLAYER_Y+ playerImg.height*0.07 < position.y)) {
+    to += 20;
+    posit();
+  }  
   weaponIcon();
-  //gameOver();
+  gameOver();
 }
 // ball display and ball movevment speed
 function ballSet() {
@@ -131,67 +135,22 @@ function keyTyped() {
       n += 1;
     }
   }
-  
-  // for playerPosit_y, dy can't be lesser or greater than the arra
-  let id = height-50;
-  //attack set
-  if (isAttack) {
-    if (key === 'w') {
-      // 1 is bat attack, 2 is change to gun
-      if (isGun === false) {
-        attack = [1,1,2];
-        if (attack[k] === 1) {
-          if (dy === 0) {
-            dy += 1;
-            normalAtt = true;
-          }
-        }
-        else {
-          isGun = true;
-          k = 0;
-        }
-      }
-      // 1 is gun attack, 2 is change to bat
-      else {
-        attack = [1,1,1,2];
-        if (attack[k] === 1) {
- 
-          circle(30, id,30);
-          k += 1;
-          id -= 7;
-        }
-        else {
-          k = 0;
-          isGun = false;
-        }
-      }
-    } 
-  } 
 }
 
 // player set of bat
 function playerSet() {
-  isAttack = true;
   // player movesetting
   PLAYER_X = width/8-playerImg.width*0.02;
   PLAYER_Y = height-playerImg.height*0.07;
+  
   playerPosit_x = [PLAYER_X, 4.3*PLAYER_X ,7.6*PLAYER_X,11*PLAYER_X];
   
-  playerPosit_y = [PLAYER_Y, PLAYER_Y-30];
+
 
   //display player
-  if (!isLose && isGun === false) {
-    image(playerImg, playerPosit_x[n], playerPosit_y[dy], playerImg.width*0.08, playerImg.height*0.07);
-  }
-  
-  if (normalAtt) {
-    normalAtt = false;
-    dy -= 1;
-    k += 1;
-  }
-  if (isGun) {
-    attackGun(playerPosit_x, playerPosit_y, n, dy);
-  }
+  image(playerImg, playerPosit_x[n], PLAYER_Y, playerImg.width*0.08, playerImg.height*0.07);
+
+
 }
 
 function heart(x, y, size) {
@@ -208,23 +167,15 @@ function heart(x, y, size) {
 
 //display the weapon that I hold for icon
 function weaponIcon() {
-  if (isGun) {
-    image(gunImg, 5,90, gunImg.width*0.03, gunImg.height*0.03);
-  } 
-  else {
-    image(playerImg,-20, 90, playerImg.width*0.07, playerImg.height*0.04);
-  }
+  image(playerImg,-20, 90, playerImg.width*0.07, playerImg.height*0.04);
 }
 
-function attackGun() {
-  image(gunImg, playerPosit_x[n], playerPosit_y[dy], gunImg.width*0.05, gunImg.height*0.05);
-}
 
 function gameOver() {
   // detect the collision for the ball and the line
 
   if (!isLose) {
-    d = (0, height, position.x, position.y);
+    d = (0, 400, position.x, position.y);
     // if ball collide the screen, remove heart
     if (d === 0) {
       removeHeart = true;
@@ -238,6 +189,7 @@ function gameOver() {
     text("Click anywhere to start", width/2-50, height/2+30);
   }
 }
+
 //go back to game scene 
 function mouseClicked() {
   if (isLose) {

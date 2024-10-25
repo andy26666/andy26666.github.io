@@ -10,8 +10,7 @@
 
 let grid;
 let cellSize;
-const GRID_SIZE = 10;
-let shouldToggleNeighbours = false;
+const GRID_SIZE = 4;
 
 function setup() {
   if (windowWidth < windowHeight) {
@@ -46,13 +45,11 @@ function mousePressed() {
   //toggle itself
   toggleCell(x,y);
 
-  if (shouldToggleNeighbours) {
-    //toggle neighbours
-    toggleCell(x+1,y);
-    toggleCell(x-1, y);
-    toggleCell(x, y+1);
-    toggleCell(x, y-1);
-  }
+  //toggle neighbours
+  toggleCell(x+1,y);
+  toggleCell(x-1, y);
+  toggleCell(x, y+1);
+  toggleCell(x, y-1);
 }
 
 function toggleCell(x,y) {
@@ -74,57 +71,6 @@ function keyPressed() {
   if (key === "e") {
     grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
   }
-  if (key === "n") {
-    shouldToggleNeighbours = !shouldToggleNeighbours;
-  }
-  if (key === " ") {
-    grid = updateGrid();
-  }
-}
-
-function updateGrid() {
-  // make another array to hold the next turn
-  let nextTurn = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
-
-  //look at every cell
-  for (let y = 0; y < GRID_SIZE; y++) {
-    for (let x = 0; x < GRID_SIZE; x++) {
-      let neighbours = 0;
-
-      //look at every neighbour around it
-      for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-          //don't fall off the edge
-          if (x + j >= 0 && x+j < GRID_SIZE && y+i >= 0 && y+i < GRID_SIZE) {
-            neighbours += grid[y+i][x+j];
-          }
-        }
-      }
-
-      // dont count yourself as a neighbour
-      neighbours -= grid[y][x];
-
-      //apply the rules
-      if (grid[y][x] === 1) {//alive
-        if (neighbours === 2 || neighbours === 3) {
-          nextTurn[y][x] = 1;
-        }
-        else {
-          nextTurn[y][x] = 0;
-        }
-      }
-
-      if (grid[y][x] === 0) {//dead
-        if (neighbours === 3) {
-          nextTurn[y][x] = 1;
-        }
-        else {
-          nextTurn[y][x] = 0;
-        }
-      }
-    }
-  }
-  return nextTurn;
 }
 
 function displayGrid() {

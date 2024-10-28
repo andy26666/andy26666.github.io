@@ -4,11 +4,16 @@
 
 // Puzzle game
 
+let cols = 3;
+let rows = 3;
 let dogImg;
 let DOGIMGWIDTH = 200;
 let DOGIMGHEIGHT = 200;
-let dogX = 50;
-let dogY = 50;
+
+let slice_x;
+let slice_y;
+
+let puzzleArr = [];
 
 function preload() {
   dogImg = loadImage("dog.png");
@@ -22,14 +27,29 @@ function setup() {
 function draw() {
   background(220);
 
-  image(dogImg, dogX, dogY, DOGIMGWIDTH,DOGIMGHEIGHT);
+  puzzleArr = shuffle(puzzleArr);
+
+  // Keep track of the position of the current square.
+  // We change these as we draw each square,
+  // so we know where to draw the next one.
+  let dogX = 0;
+  let dogY = 0;
+
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+
+    }
+  }
 }
 
 function cropImage() {
-  for (let y = 20; y < 60; y+= 20) {
-    dogY = dogY + y;
-    for (let x = 20; x < 60; x+=20) {
-      dogX = dogX + x;
+  slice_x = DOGIMGWIDTH/cols;
+  slice_y = DOGIMGHEIGHT/rows;
+
+  for (let y = 0; y < height; y += slice_y) {
+    for (let x = 0; x < width; x += slice_x) {
+      puzzleArr.push(dogImg.get(x, y, slice_x, slice_y));
     }
   }
+
 }

@@ -1,6 +1,6 @@
-// Grid Demo
+// Character in Grid Demo
 // Dan Schellenberg
-// Oct 22, 2024
+// Oct 29, 2024
 
 // if hardcoding the grid, use this:
 // let grid = [[1, 0, 0, 1],
@@ -11,6 +11,13 @@
 let grid;
 let cellSize;
 const GRID_SIZE = 4;
+const OPEN_TILE = 0;
+const IMPASSIBLE = 1;
+const PLAYER = 9;
+let thePlayer = {
+  x: 0,
+  y: 0,
+};
 
 function setup() {
   if (windowWidth < windowHeight) {
@@ -21,6 +28,9 @@ function setup() {
   }
   cellSize = height/GRID_SIZE;
   grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
+
+  //add player to the grid
+  grid(thePlayer.y)(thePlayer.x)
 }
 
 function windowResized() {
@@ -45,21 +55,16 @@ function mousePressed() {
   //toggle itself
   toggleCell(x,y);
 
-  //toggle neighbours
-  toggleCell(x+1,y);
-  toggleCell(x-1, y);
-  toggleCell(x, y+1);
-  toggleCell(x, y-1);
 }
 
 function toggleCell(x,y) {
   //make sure the cell you're toggling is in the grid
   if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
-    if (grid[y][x] === 0) {
-      grid[y][x] = 1;
+    if (grid[y][x] === OPEN_TILE) {
+      grid[y][x] = IMPASSIBLE;
     }
-    else {
-      grid[y][x] = 0;
+    else if (grid[y][x] === IMPASSIBLE) {
+      grid[y][x] = OPEN_TILE;
     }
   }
 }
@@ -71,16 +76,41 @@ function keyPressed() {
   if (key === "e") {
     grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
   }
+  if (key === "s") {
+    //move down
+    movePlayer(thePlayer.x, thePlayer.y + 1);
+  }
+  if (key === "w") {
+    //move down
+    movePlayer(thePlayer.x, thePlayer.y - 1);
+  }
+  if (key === "d") {
+    //move down
+    movePlayer(thePlayer.x + 1, thePlayer.y);
+  }
+  if (key === "a") {
+    //move down
+    movePlayer(thePlayer.x=1, thePlayer.y - 1);
+  }
 }
 
+function movePlayer (x,y) {let oldX = thePlayer.x;
+  thePlayer.x-= x;
+  thePlayer.y-= y;
+
+  grid[thePlayer.x][thePlayer.y] = {:AYERLd}
+}
 function displayGrid() {
   for (let y = 0; y < GRID_SIZE; y++) {
     for (let x = 0; x < GRID_SIZE; x++) {
-      if (grid[y][x] === 1) {
+      if (grid[y][x] === IMPASSIBLE) {
         fill("black");
       }
-      else if (grid[y][x] === 0) {
+      else if (grid[y][x] === OPEN_TILE) {
         fill("white");
+      }
+      else if (gird[y][x] === PLAYER) {
+        fill("red");
       }
       square(x * cellSize, y * cellSize, cellSize);
     }
@@ -95,10 +125,10 @@ function generateRandomGrid(cols, rows) {
     for (let x = 0; x < cols; x++) {
       //make it a 1 half the time, a 0 half the time
       if (random(100) < 50) {
-        newGrid[y].push(1);
+        newGrid[y].push(IMPASSIBLE);
       }
       else {
-        newGrid[y].push(0);
+        newGrid[y].push(OPEN_TILE);
       }
     }
   }
@@ -110,7 +140,7 @@ function generateEmptyGrid(cols, rows) {
   for (let y = 0; y < rows; y++) {
     newGrid.push([]);
     for (let x = 0; x < cols; x++) {
-      newGrid[y].push(0);
+      newGrid[y].push(OPEN_TILE);
     }
   }
   return newGrid;

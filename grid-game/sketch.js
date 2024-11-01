@@ -14,7 +14,11 @@ let isMove = false;
 let isClear = false;
 let tiles = [];
 let emptyTileIndex = 0;
+let button;
+let winButton;
 
+// the colour of the background of screen
+let colour = "white";
 // place of origin picture
 const ORIGIN_X = 500;
 const ORIGIN_Y = 200;
@@ -34,21 +38,41 @@ function setup() {
 
   initTiles();
   shuffleTiles();
-  
-  let button = createButton('Check');
+  button = createButton('Check');
   button.position(300, 600);
   button.size(200, 100);
-
   button.mousePressed(isclearButton);
+
+  if (isClear) {
+    winButton = createButton('Play Again');
+    winButton.position(300, 600);
+    winButton.size(200, 100);
+    winButton.mousePressed(startAgain);
+
+  }
+
+
+
 }
 
 function draw() {
-  background(220);
+  background(colour);
+
+  //clear text
+  if (!isClear) {
+    puzzleBorder();
+    drawTiles();
+    originImg();
+  }
+  else {
+    colour = "black";
+    fill("white");
+    textSize(100);
+    text("You Win", 225, 350);
+  }
 
   // draw the cover border of puzzle
-  puzzleBorder();
 
-  drawTiles();
   // if the puzzle is impossible to solve, shuffle again 
   if (!isSolvable(tiles, ROWS, COLS)) {
     shuffleTiles();
@@ -57,8 +81,6 @@ function draw() {
   if (isSolved() && isMove === false) {
     shuffleTiles();
   }
-
-  originImg();
 
 }
 
@@ -77,7 +99,7 @@ function drawTiles() {
       if (tileValue !== 0) { // if 0, it is empty tile
         const x = j * tileWidth;
         const y = i * tileHeight;
-        const sx = (tileValue % COLS) * tileWidth;
+        const sx = floor(tileValue % COLS) * tileWidth;
         const sy = floor(tileValue / COLS) * tileHeight; 
         image(dogimg, x, y, tileWidth, tileHeight, sx, sy, tileWidth, tileHeight);
         noFill();
@@ -182,6 +204,13 @@ function puzzleBorder() {
 function isclearButton() {
   if (isSolved() && isMove) {
     isClear = true;
+    button.hide();
   }
+}
+
+function startAgain() {
+  isClear = false;
+  winButton.hide();
+  draw();
 }
 

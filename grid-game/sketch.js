@@ -1,4 +1,10 @@
+
+
+//At the top left side of the original image puzzle is always empty.
+
 let dogimg;
+
+//COLS and ROWS must be bigger than 1
 const COLS = 2; // Number of columns
 const ROWS = 2; // Number of rows
 let tileWidth;
@@ -28,6 +34,12 @@ function setup() {
 
   initTiles();
   shuffleTiles();
+  
+  let button = createButton('Check');
+  button.position(300, 600);
+  button.size(200, 100);
+
+  button.mousePressed(isclearButton);
 }
 
 function draw() {
@@ -48,12 +60,6 @@ function draw() {
 
   originImg();
 
-  if (isSolved() && isMove) {
-    isClear = true;
-    fill(0, 255, 0);
-    textSize(32);
-    text("Puzzle Solved!", 100, height - 100);
-  }
 }
 
 // set the origin puzzle number, and use it to detect isSolve()
@@ -83,7 +89,7 @@ function drawTiles() {
 
 function shuffleTiles() {
   for (let i = tiles.length - 1; i > 0; i--) {
-    const j = floor(random(i + 1));
+    let j = floor(random(i+1));
     [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
   }
   emptyTileIndex = tiles.indexOf(0); // Find the empty tile index
@@ -140,7 +146,7 @@ function mousePressed() {
   const clickedTileIndex = i * COLS + j;
 
   // detect the place is empty place and move and set to new place. The past place become empty place
-  if ((mouseX >= 0 && mouseX <= tileWidth * COLS && mouseY >= 0 && mouseY <= tileHeight * ROWS)&&(!isClear)) {
+  if ((mouseX >= 0 && mouseX <= tileWidth * COLS && mouseY >= 0 && mouseY <= tileHeight * ROWS) && (!isClear)) {
     if (isAdjacent(clickedTileIndex, emptyTileIndex)) {
       // Swap tiles
       [tiles[clickedTileIndex], tiles[emptyTileIndex]] = [tiles[emptyTileIndex], tiles[clickedTileIndex]];
@@ -171,5 +177,11 @@ function puzzleBorder() {
   noFill();
   fill("lightblue");
   rect(0, 0, tileWidth * COLS, tileHeight * ROWS);
+}
+
+function isclearButton() {
+  if (isSolved() && isMove) {
+    isClear = true;
+  }
 }
 

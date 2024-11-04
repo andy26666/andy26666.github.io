@@ -1,5 +1,4 @@
 
-
 //At the top left side of the original image puzzle is always empty.
 
 let dogimg;
@@ -15,7 +14,9 @@ let isClear = false;
 let tiles = [];
 let emptyTileIndex = 0;
 let button;
-let winButton;
+//true if play and after shuffle, it became false
+let re_play = false;
+
 
 // the colour of the background of screen
 let colour = "white";
@@ -38,50 +39,40 @@ function setup() {
 
   initTiles();
   shuffleTiles();
-  button = createButton('Check');
-  button.position(300, 600);
-  button.size(200, 100);
-  button.mousePressed(isclearButton);
-
-  if (isClear) {
-    winButton = createButton('Play Again');
-    winButton.position(300, 600);
-    winButton.size(200, 100);
-    winButton.mousePressed(startAgain);
-
-  }
-
-
 
 }
 
 function draw() {
   background(colour);
 
-  //clear text
+  // related what to do for state of game
   if (!isClear) {
+    colour = "pink";
     puzzleBorder();
-    drawTiles();
     originImg();
+    drawTiles();
+    // if the puzzle is impossible to solve, shuffle again 
+    if (!isSolvable(tiles, ROWS, COLS)) {
+      shuffleTiles();
+    }
+    // if the puzzle already solved, shuffle again
+    if (isSolved() && isMove === false) {
+      shuffleTiles();
+    }
+    if (isSolved() && isMove) {
+      isClear = true;
+    }
   }
   else {
     colour = "black";
     fill("white");
     textSize(100);
     text("You Win", 225, 350);
+    button = createButton('PLAY AGAIN');
+    button.position(200, 600);
+    button.size(400, 100);
+    button.mousePressed(playAgain);
   }
-
-  // draw the cover border of puzzle
-
-  // if the puzzle is impossible to solve, shuffle again 
-  if (!isSolvable(tiles, ROWS, COLS)) {
-    shuffleTiles();
-  }
-  // if the puzzle already solved, shuffle again
-  if (isSolved() && isMove === false) {
-    shuffleTiles();
-  }
-
 }
 
 // set the origin puzzle number, and use it to detect isSolve()
@@ -201,16 +192,10 @@ function puzzleBorder() {
   rect(0, 0, tileWidth * COLS, tileHeight * ROWS);
 }
 
-function isclearButton() {
-  if (isSolved() && isMove) {
-    isClear = true;
-    button.hide();
-  }
+function playAgain() {
+  shuffleTiles();
+  isClear = false;
 }
 
-function startAgain() {
-  isClear = false;
-  winButton.hide();
-  draw();
-}
+
 

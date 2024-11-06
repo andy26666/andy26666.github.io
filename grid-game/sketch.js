@@ -4,18 +4,19 @@
 let dogimg;
 
 //COLS and ROWS must be bigger than 1
-const COLS = 2; // Number of columns
-const ROWS = 2; // Number of rows
+let COLS; // Number of columns
+let ROWS; // Number of rows
 let tileWidth;
 let tileHeight;
+
+let sizeInput;
+let puzzleSize;
 // check the puzzle is move or not
 let isMove = false;
 let isClear = false;
 let tiles = [];
 let emptyTileIndex = 0;
-let button;
-//true if play and after shuffle, it became false
-let re_play = false;
+
 
 
 // the colour of the background of screen
@@ -30,8 +31,10 @@ function preload() {
 
 function setup() {
   createCanvas(800, 800); 
-  
   dogimg.resize(width/2, height/2); // Resize image to fit screen
+
+  COLS = 2;
+  ROWS = 2;
 
   //get each piece of width and height
   tileWidth = 400 / COLS;
@@ -50,14 +53,16 @@ function draw() {
     colour = "pink";
     puzzleBorder();
     originImg();
-    drawTiles();
     // if the puzzle is impossible to solve, shuffle again 
     if (!isSolvable(tiles, ROWS, COLS)) {
       shuffleTiles();
     }
-    // if the puzzle already solved, shuffle again
-    if (isSolved() && isMove === false) {
+    // if the puzzle already solved right after shuffle, shuffle again
+    else if (isSolved() && isMove === false) {
       shuffleTiles();
+    }
+    else {
+      drawTiles();
     }
     if (isSolved() && isMove) {
       isClear = true;
@@ -68,10 +73,8 @@ function draw() {
     fill("white");
     textSize(100);
     text("You Win", 225, 350);
-    button = createButton('PLAY AGAIN');
-    button.position(200, 600);
-    button.size(400, 100);
-    button.mousePressed(playAgain);
+    textSize(35);
+    text("Click Anywhere to play again", 170, 500);
   }
 }
 
@@ -166,6 +169,21 @@ function mousePressed() {
       emptyTileIndex = clickedTileIndex;
     }
   }
+
+  if (isClear) {
+    shuffleTiles();
+    if (!isSolvable(tiles, ROWS, COLS)) {
+      shuffleTiles();
+    }
+    // if the puzzle already solved right after shuffle, shuffle again
+    else if (isSolved() && isMove === false) {
+      shuffleTiles();
+    }
+    else {
+      drawTiles();
+    }
+    isClear = false;
+  }
 }
 
 function isAdjacent(index1, index2) {
@@ -192,10 +210,6 @@ function puzzleBorder() {
   rect(0, 0, tileWidth * COLS, tileHeight * ROWS);
 }
 
-function playAgain() {
-  shuffleTiles();
-  isClear = false;
-}
 
 
 

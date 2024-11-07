@@ -4,8 +4,8 @@
 let dogimg;
 
 //COLS and ROWS must be bigger than 1
-let COLS; // Number of columns
-let ROWS; // Number of rows
+let COLS = 3; // Number of columns
+let ROWS = 3; // Number of rows
 let tileWidth;
 let tileHeight;
 
@@ -33,8 +33,7 @@ function setup() {
   createCanvas(800, 800); 
   dogimg.resize(width/2, height/2); // Resize image to fit screen
 
-  COLS = 2;
-  ROWS = 2;
+
 
   //get each piece of width and height
   tileWidth = 400 / COLS;
@@ -53,6 +52,7 @@ function draw() {
     colour = "pink";
     puzzleBorder();
     originImg();
+    hint();
     // if the puzzle is impossible to solve, shuffle again 
     if (!isSolvable(tiles, ROWS, COLS)) {
       shuffleTiles();
@@ -146,6 +146,7 @@ function isSolved() {
     if (tiles[i] !== i) {
       return false; // If any tile is out of place, return false
     }
+
   }
   return true; // All tiles are in the correct place
 }
@@ -210,6 +211,9 @@ function puzzleBorder() {
   rect(0, 0, tileWidth * COLS, tileHeight * ROWS);
 }
 
+function hint() {
+  text
+}
 
 
 

@@ -14,6 +14,8 @@
 - [Game of Life](game-of-life)
 - [REctangular Grid](rectangle-grid)
 - [Debugging Demo](debugging)
+- [Walker OOP](walker-oop)
+
 
 
 

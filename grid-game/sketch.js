@@ -3,27 +3,54 @@
 
 let dogimg;
 
+// The amount of puzzle pieces
 //COLS and ROWS must be bigger than 1
-let COLS = 3; // Number of columns
-let ROWS = 3; // Number of rows
+const COLS = 3; // Number of columns
+const ROWS = 3; // Number of rows
+
 let tileWidth;
 let tileHeight;
 
 let sizeInput;
 let puzzleSize;
+
 // check the puzzle is move or not
 let isMove = false;
 let isClear = false;
 let tiles = [];
 let emptyTileIndex = 0;
 
-
+// start scene
+let isStartScene = true;
+let imgButton = false;
+let normalButton = false;
+let puzzleSelect;
 
 // the colour of the background of screen
 let colour = "white";
 // place of origin picture
 const ORIGIN_X = 500;
 const ORIGIN_Y = 200;
+
+///////////////////////////////////////////
+// variable for normal puzzle
+let puzzleSet = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 0]  // 0 represents the empty space
+];
+
+let currentPuz = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 0]
+];
+
+let tileSize;
+let isDone = false;
+let emptyTileX = 2; // Start with the empty tile in the bottom-right corner
+let emptyTileY = 2;
+
 
 function preload() {
   dogimg = loadImage('dog.png'); 
@@ -33,7 +60,22 @@ function setup() {
   createCanvas(800, 800); 
   dogimg.resize(width/2, height/2); // Resize image to fit screen
 
+  if (isStartScene) {
+    background("lightblue");
+    textSize(75);
+    text("SLIDE PUZZLE", 150, 200);
 
+    //button
+    imgButton = createButton('Image Puzzle');
+    imgButton.position(260, 375);
+  
+    imgButton.mousePressed(imgPuzzle);
+  
+    normalButton = createButton('Normal Puzzle');
+    normalButton.position(250, 500);
+  
+    normalButton.mousePressed(normalPuzzle);
+  }
 
   //get each piece of width and height
   tileWidth = 400 / COLS;
@@ -41,40 +83,72 @@ function setup() {
 
   initTiles();
   shuffleTiles();
+  
 
+  tileSize = width / 3;  // 3x3 grid, so each tile will be this size
+  
+  shufflePuzzle();  // Shuffle the puzzle at the start 
+
+}
+function imgPuzzle() {
+  puzzleSelect = "imgpuzzle";
+  isStartScene = false;
+  imgButton.hide();
+  normalButton.hide();
+}
+function normalPuzzle() {
+  puzzleSelect = "normalpuzzle";
+  isStartScene = false;
+  normalButton.hide();
+  imgButton.hide();
 }
 
 function draw() {
-  background(colour);
+  
+  if (!isStartScene && puzzleSelect === "imgpuzzle") {
+    background(colour);
 
-  // related what to do for state of game
-  if (!isClear) {
-    colour = "pink";
-    puzzleBorder();
-    originImg();
-    hint();
-    // if the puzzle is impossible to solve, shuffle again 
-    if (!isSolvable(tiles, ROWS, COLS)) {
-      shuffleTiles();
-    }
-    // if the puzzle already solved right after shuffle, shuffle again
-    else if (isSolved() && isMove === false) {
-      shuffleTiles();
+    // related what to do for state of game
+    if (!isClear) {
+
+      colour = "pink";
+      puzzleBorder();
+      originImg();
+      // if the puzzle is impossible to solve, shuffle again 
+      if (!isSolvable(tiles, ROWS, COLS)) {
+        shuffleTiles();
+      }
+      // if the puzzle already solved right after shuffle, shuffle again
+      else if (isSolved() && isMove === false) {
+        shuffleTiles();
+      }
+      else {
+        drawTiles();
+      }
+      if (isSolved() && isMove) {
+        isClear = true;
+      }
     }
     else {
-      drawTiles();
-    }
-    if (isSolved() && isMove) {
-      isClear = true;
+      colour = "black";
+      fill("white");
+      textSize(100);
+      text("You Win", 225, 350);
+      textSize(35);
+      text("Click Anywhere to play again", 170, 500);
     }
   }
-  else {
-    colour = "black";
-    fill("white");
-    textSize(100);
-    text("You Win", 225, 350);
-    textSize(35);
-    text("Click Anywhere to play again", 170, 500);
+  if (!isStartScene && puzzleSelect === "normalpuzzle") {
+    // Draw the current puzzle state
+    drawPuzzle();
+
+    // Check if the puzzle is solved
+    if (isDone) {
+      textSize(32);
+      fill(0);
+      textAlign(CENTER, CENTER);
+      text("Solved!", width / 2, height / 2);
+    }
   }
 }
 
@@ -142,49 +216,84 @@ function isSolvable(tiles, ROWS, COLS) {
 }
 
 function isSolved() {
-  for (let i = 0; i < tiles.length; i++) {
-    if (tiles[i] !== i) {
-      return false; // If any tile is out of place, return false
-    }
+  if (puzzleSelect === "imgpuzzle") {
+    for (let i = 0; i < tiles.length; i++) {
+      if (tiles[i] !== i) {
+        return false; // If any tile is out of place, return false
+      }
 
+    }
+    return true; // All tiles are in the correct place
   }
-  return true; // All tiles are in the correct place
+  else {
+    // Check if the current puzzle matches the solved state
+    isDone = true;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (currentPuz[i][j] !== puzzleSet[i][j]) {
+          isDone = false;
+          break;
+        }
+      }
+      if (!isDone) {
+        break;
+      }
+    }
+  }
 }
 
 
 function mousePressed() {
-  isMove = true;
+  if (puzzleSelect === "imgpuzzle") {
+    isMove = true;
 
-  //detect which rows of mouse
-  const i = floor(mouseY / tileHeight);
-  //detect which cols of mouse
-  const j = floor(mouseX / tileWidth);
+    //detect which rows of mouse
+    const i = floor(mouseY / tileHeight);
+    //detect which cols of mouse
+    const j = floor(mouseX / tileWidth);
+    
+    const clickedTileIndex = i * COLS + j;
+
+    // detect the place is empty place and move and set to new place. The past place become empty place
+    if ((mouseX >= 0 && mouseX <= tileWidth * COLS && mouseY >= 0 && mouseY <= tileHeight * ROWS) && (!isClear)) {
+      if (isAdjacent(clickedTileIndex, emptyTileIndex)) {
+        // Swap tiles
+        [tiles[clickedTileIndex], tiles[emptyTileIndex]] = [tiles[emptyTileIndex], tiles[clickedTileIndex]];
+        emptyTileIndex = clickedTileIndex;
+      }
+    }
+
+    if (isClear) {
+      shuffleTiles();
+      if (!isSolvable(tiles, ROWS, COLS)) {
+        shuffleTiles();
+      }
+      // if the puzzle already solved right after shuffle, shuffle again
+      else if (isSolved() && isMove === false) {
+        shuffleTiles();
+      }
+      else {
+        drawTiles();
+      }
+      isClear = false;
+    }
+  }
+  else {
+    if (isDone) return; // Do nothing if the puzzle is solved
   
-  const clickedTileIndex = i * COLS + j;
-
-  // detect the place is empty place and move and set to new place. The past place become empty place
-  if ((mouseX >= 0 && mouseX <= tileWidth * COLS && mouseY >= 0 && mouseY <= tileHeight * ROWS) && (!isClear)) {
-    if (isAdjacent(clickedTileIndex, emptyTileIndex)) {
-      // Swap tiles
-      [tiles[clickedTileIndex], tiles[emptyTileIndex]] = [tiles[emptyTileIndex], tiles[clickedTileIndex]];
-      emptyTileIndex = clickedTileIndex;
+    let col = floor(mouseX / tileSize);
+    let row = floor(mouseY / tileSize);
+  
+    // If the clicked tile is adjacent to the empty space, swap it
+    if (isAdjacent(row, col)) {
+      swapTiles(row, col);
     }
+  
+    // Check if the puzzle is solved after the move
+    isSolved();
   }
-
-  if (isClear) {
-    shuffleTiles();
-    if (!isSolvable(tiles, ROWS, COLS)) {
-      shuffleTiles();
-    }
-    // if the puzzle already solved right after shuffle, shuffle again
-    else if (isSolved() && isMove === false) {
-      shuffleTiles();
-    }
-    else {
-      drawTiles();
-    }
-    isClear = false;
-  }
+  
+  
 }
 
 function isAdjacent(index1, index2) {
@@ -211,9 +320,7 @@ function puzzleBorder() {
   rect(0, 0, tileWidth * COLS, tileHeight * ROWS);
 }
 
-function hint() {
-  text
-}
+
 
 
 

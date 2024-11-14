@@ -22,9 +22,8 @@ let emptyTileIndex = 0;
 
 // start scene
 let isStartScene = true;
-let imgButton = false;
-let normalButton = false;
-let puzzleSelect;
+let playGame = false;
+let tutorial = false;
 
 // the colour of the background of screen
 let colour = "white";
@@ -32,24 +31,10 @@ let colour = "white";
 const ORIGIN_X = 500;
 const ORIGIN_Y = 200;
 
-///////////////////////////////////////////
-// variable for normal puzzle
-let puzzleSet = [
-  [1, 2, 3],
-  [4, 5, 6],
-  [7, 8, 0]  // 0 represents the empty space
-];
-
-let currentPuz = [
-  [1, 2, 3],
-  [4, 5, 6],
-  [7, 8, 0]
-];
-
+//variable for tutorial
+let currentPuz;
 let tileSize;
-let isDone = false;
-let emptyTileX = 2; // Start with the empty tile in the bottom-right corner
-let emptyTileY = 2;
+let next_step = 0;
 
 
 function preload() {
@@ -70,11 +55,12 @@ function setup() {
     imgButton.position(260, 375);
   
     imgButton.mousePressed(imgPuzzle);
+
+    tutoButton = createButton('Tutorial');
+    tutoButton.position(315, 475);
+
+    tutoButton.mousePressed(puzzleTutorial);
   
-    normalButton = createButton('Normal Puzzle');
-    normalButton.position(250, 500);
-  
-    normalButton.mousePressed(normalPuzzle);
   }
 
   //get each piece of width and height
@@ -84,28 +70,27 @@ function setup() {
   initTiles();
   shuffleTiles();
   
-
-  tileSize = width / 3;  // 3x3 grid, so each tile will be this size
-  
-  shufflePuzzle();  // Shuffle the puzzle at the start 
+  tileSize = 400 / 3;  // 3x3 grid, so each tile will be this size
 
 }
 function imgPuzzle() {
-  puzzleSelect = "imgpuzzle";
   isStartScene = false;
+  playGame = true;
   imgButton.hide();
-  normalButton.hide();
+  tutoButton.hide();
 }
-function normalPuzzle() {
-  puzzleSelect = "normalpuzzle";
+function puzzleTutorial() {
   isStartScene = false;
-  normalButton.hide();
+  tutorial = true;
+  tutoButton.hide();
   imgButton.hide();
+
 }
 
 function draw() {
+  console.log(next_step);
   
-  if (!isStartScene && puzzleSelect === "imgpuzzle") {
+  if (!isStartScene && playGame) {
     background(colour);
 
     // related what to do for state of game
@@ -138,17 +123,40 @@ function draw() {
       text("Click Anywhere to play again", 170, 500);
     }
   }
-  if (!isStartScene && puzzleSelect === "normalpuzzle") {
-    // Draw the current puzzle state
-    drawPuzzle();
-
-    // Check if the puzzle is solved
-    if (isDone) {
-      textSize(32);
-      fill(0);
-      textAlign(CENTER, CENTER);
-      text("Solved!", width / 2, height / 2);
+  else if (!isStartScene && tutorial) {
+    background(colour);
+    colour = "lightgreen";
+    if (next_step === 1) {
+      currentPuz = [
+        [2, 4, 6],
+        [3, 8, 5],
+        [7, 9, 0]
+      ];
+      // Draw the current puzzle state
+      drawPuzzle();
+      textSize(20);
+      text("Always solve the bottom pieces first", 400, 500);
+      text("So make bottom left and bottom right attach and put bottom middle above bottom right. ",400, 700);
     }
+    if (next_step === 2) {
+      currentPuz = [
+        [2, 5, 3],
+        [4, 6, 0],
+        [7, 8, 9]
+      ];
+      drawPuzzle();
+      textSize(20);
+      text("After solve bottom, then solve middle part like solve bottom part.", 400, 500);
+      text("Like this!", 400, 700);
+
+    }
+
+  }
+  else {
+    background("lightblue");
+    textSize(75);
+    text("SLIDE PUZZLE", 150, 200);
+
   }
 }
 
@@ -216,44 +224,27 @@ function isSolvable(tiles, ROWS, COLS) {
 }
 
 function isSolved() {
-  if (puzzleSelect === "imgpuzzle") {
-    for (let i = 0; i < tiles.length; i++) {
-      if (tiles[i] !== i) {
-        return false; // If any tile is out of place, return false
-      }
+  for (let i = 0; i < tiles.length; i++) {
+    if (tiles[i] !== i) {
+      return false; // If any tile is out of place, return false
+    }
 
-    }
-    return true; // All tiles are in the correct place
   }
-  else {
-    // Check if the current puzzle matches the solved state
-    isDone = true;
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (currentPuz[i][j] !== puzzleSet[i][j]) {
-          isDone = false;
-          break;
-        }
-      }
-      if (!isDone) {
-        break;
-      }
-    }
-  }
+  return true; // All tiles are in the correct place
 }
 
 
 function mousePressed() {
-  if (puzzleSelect === "imgpuzzle") {
+  if (playGame && !isStartScene) {
     isMove = true;
 
     //detect which rows of mouse
     const i = floor(mouseY / tileHeight);
     //detect which cols of mouse
     const j = floor(mouseX / tileWidth);
-    
+      
     const clickedTileIndex = i * COLS + j;
-
+  
     // detect the place is empty place and move and set to new place. The past place become empty place
     if ((mouseX >= 0 && mouseX <= tileWidth * COLS && mouseY >= 0 && mouseY <= tileHeight * ROWS) && (!isClear)) {
       if (isAdjacent(clickedTileIndex, emptyTileIndex)) {
@@ -262,7 +253,7 @@ function mousePressed() {
         emptyTileIndex = clickedTileIndex;
       }
     }
-
+  
     if (isClear) {
       shuffleTiles();
       if (!isSolvable(tiles, ROWS, COLS)) {
@@ -278,23 +269,12 @@ function mousePressed() {
       isClear = false;
     }
   }
-  else {
-    if (isDone) return; // Do nothing if the puzzle is solved
-  
-    let col = floor(mouseX / tileSize);
-    let row = floor(mouseY / tileSize);
-  
-    // If the clicked tile is adjacent to the empty space, swap it
-    if (isAdjacent(row, col)) {
-      swapTiles(row, col);
-    }
-  
-    // Check if the puzzle is solved after the move
-    isSolved();
+  else if (tutorial && !isStartScene) {
+    next_step++;
   }
-  
-  
+
 }
+
 
 function isAdjacent(index1, index2) {
   const row1 = floor(index1 / COLS);
@@ -320,7 +300,23 @@ function puzzleBorder() {
   rect(0, 0, tileWidth * COLS, tileHeight * ROWS);
 }
 
+function drawPuzzle() {
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      let num = currentPuz[row][col];
+      let x = col * tileSize;
+      let y = row * tileSize;
 
-
-
-
+      // Draw the number inside the tile, except for the empty space (0)
+      if (num !== 0) {
+        fill(255);
+        stroke(0);
+        rect(x, y, tileSize, tileSize);  // Draw the tile
+        fill(0);
+        textSize(32);
+        textAlign(CENTER, CENTER);
+        text(num, x + tileSize / 2, y + tileSize / 2);  // Draw the number inside the tile
+      }
+    }
+  }
+}

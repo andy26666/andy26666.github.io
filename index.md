@@ -16,6 +16,7 @@
 - [Debugging Demo](debugging)
 - [Walker OOP](walker-oop)
 - [Walker OOP ARRAY](walker-oop-array)
+- [Fireworks OOP](fireworks)
 
 
 

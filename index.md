@@ -17,6 +17,7 @@
 - [Walker OOP](walker-oop)
 - [Walker OOP ARRAY](walker-oop-array)
 - [Fireworks OOP](fireworks)
+- [Connected Nodes OOP](nodes)
 
 
 

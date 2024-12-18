@@ -21,7 +21,8 @@
 - [Collide 2d Library](collide)
 - [LocalStorage Demo](local-storage)
 - [Inheritance Demo](inheritanceS)
-
+- [Fractal Circles](circles)
+- [Sierpinksi Triangle](triangle)
 
 
 
